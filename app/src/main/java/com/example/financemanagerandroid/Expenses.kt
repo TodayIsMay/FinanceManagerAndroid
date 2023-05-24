@@ -1,14 +1,14 @@
 package com.example.financemanagerandroid
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.Button
+import android.widget.ListView
+import android.widget.SimpleAdapter
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -16,41 +16,25 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class MainActivity() : AppCompatActivity() {
-    private lateinit var helloText: TextView
-    private lateinit var startButton: ImageButton
+class Expenses : AppCompatActivity() {
+    private lateinit var getExpensesButton: Button
+    private lateinit var listDB: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_expenses)
 
-        helloText = findViewById(R.id.helloText)
-        startButton = findViewById(R.id.startButton)
+        getExpensesButton = findViewById(R.id.get_expenses_button)
+        listDB = findViewById(R.id.listDB)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.options_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        if (menuItem.itemId == R.id.expenses_option) {
-            startActivity(Intent(this, Expenses::class.java))
-            return true
-        }
-        return true
-    }
-
-
-    fun onStartButtonClick(view: View) {
+    fun onGetExpensesButton(view: View) {
         Thread(Runnable {
             try {
                 val content =
-                    getContent("http://92.53.124.44:8080/version");
+                    getContent("http://92.53.124.44:8080/expenses")!!
                 runOnUiThread {
-                    helloText.text = content
-                    helloText.visibility = View.VISIBLE
+                    doSmth(content)
                 }
             } catch (ex: IOException) {
                 println(ex.message)
@@ -59,6 +43,42 @@ class MainActivity() : AppCompatActivity() {
         }).start()
     }
 
+    fun doSmth(content: String) {
+        val arrayOfIds = arrayOf("1", "2")
+        val listOfPersons = mutableListOf<Map<String, String>>()
+
+        val person1 = parseJson(content)
+        val person2 = parseJson1()
+
+        listOfPersons.add(0, person1)
+        listOfPersons.add(1, person2)
+
+
+        val adapter = SimpleAdapter(
+            this, listOfPersons, R.layout.listview_item, arrayOf("amount", "comment"),
+            intArrayOf(R.id.textPerson, R.id.textAchievement)
+        )
+        listDB.adapter = adapter
+
+    }
+
+    private fun parseJson(json: String): Map<String, String> {
+        val jsonArray = JSONArray(json)
+        val map = mutableMapOf<String, String>()
+        map["amount"] = jsonArray.getJSONObject(0).getInt("amount").toString()
+        map["comment"] = jsonArray.getJSONObject(0).getString("comment")
+        return map
+    }
+
+    private fun parseJson1(): Map<String, String> {
+        val json =
+            "{\"amount\": 12.0,\"comment\": \"testComment\",\"categoryId\": 1,\"date\": \"2023-05-21T18:15:21.53769\" }"
+        val jsonObject = JSONObject(json)
+        val map = mutableMapOf<String, String>()
+        map["amount"] = jsonObject.getInt("amount").toString()
+        map["comment"] = jsonObject.getString("comment")
+        return map
+    }
 
     @Throws(IOException::class)
     private fun getContent(path: String): String? {

@@ -20,11 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ListView
-        android:id="@+id/listDB"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <ImageButton
         android:id="@+id/startButton"
         style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
@@ -37,18 +32,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/helloText"
         app:srcCompat="@android:drawable/ic_lock_power_off" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="447dp"
-        android:onClick="onGetExpensesButtonClick"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/listDB"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/listDB"
-        app:layout_constraintTop_toBottomOf="@+id/startButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
