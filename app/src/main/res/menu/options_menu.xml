@@ -3,4 +3,8 @@
         android:id="@+id/expenses_option"
         android:title="@string/expenses" />
 
+    <item
+        android:id="@+id/version_option"
+        android:title="@string/version" />
+
 </menu>

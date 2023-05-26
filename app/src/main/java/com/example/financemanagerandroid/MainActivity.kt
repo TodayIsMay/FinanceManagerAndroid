@@ -1,14 +1,13 @@
 package com.example.financemanagerandroid
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.financemanagerandroid.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -17,48 +16,27 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity() : AppCompatActivity() {
-    private lateinit var helloText: TextView
-    private lateinit var startButton: ImageButton
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        helloText = findViewById(R.id.helloText)
-        startButton = findViewById(R.id.startButton)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val navView: BottomNavigationView = binding.navView
+
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.expenses_option, R.id.version_option
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.options_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        if (menuItem.itemId == R.id.expenses_option) {
-            startActivity(Intent(this, Expenses::class.java))
-            return true
-        }
-        return true
-    }
-
-
-    fun onStartButtonClick(view: View) {
-        Thread(Runnable {
-            try {
-                val content =
-                    getContent("http://92.53.124.44:8080/version");
-                runOnUiThread {
-                    helloText.text = content
-                    helloText.visibility = View.VISIBLE
-                }
-            } catch (ex: IOException) {
-                println(ex.message)
-                Log.e("MayApp", "There was an IO error", ex)
-            }
-        }).start()
-    }
-
 
     @Throws(IOException::class)
     private fun getContent(path: String): String? {
