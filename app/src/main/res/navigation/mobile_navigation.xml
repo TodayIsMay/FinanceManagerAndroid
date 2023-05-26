@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/version_option"
-        android:name="com.example.financemanagerandroid.FirstFragment"
+        android:name="com.example.financemanagerandroid.VersionFragment"
         android:label="Version"
         tools:layout="@layout/fragment_first"/>
 
