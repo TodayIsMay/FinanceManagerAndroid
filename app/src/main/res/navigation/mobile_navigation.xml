@@ -9,12 +9,12 @@
         android:id="@+id/version_option"
         android:name="com.example.financemanagerandroid.VersionFragment"
         android:label="Version"
-        tools:layout="@layout/fragment_first"/>
+        tools:layout="@layout/fragment_version"/>
 
     <fragment
         android:id="@+id/expenses_option"
-        android:name="com.example.financemanagerandroid.SecondFragment"
+        android:name="com.example.financemanagerandroid.ExpensesFragment"
         android:label="Expenses"
-        tools:layout="@layout/fragment_second"/>
+        tools:layout="@layout/fragment_expenses"/>
 
 </navigation>

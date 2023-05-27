@@ -56,4 +56,5 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="version">Version</string>
+    <string name="get_expenses">Get Expenses</string>
 </resources>

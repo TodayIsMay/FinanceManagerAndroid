@@ -2,18 +2,14 @@ package com.example.financemanagerandroid
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import android.widget.SimpleAdapter
-import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.example.financemanagerandroid.databinding.FragmentFirstBinding
-import com.example.financemanagerandroid.databinding.FragmentSecondBinding
+import androidx.fragment.app.Fragment
+import com.example.financemanagerandroid.databinding.FragmentExpensesBinding
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.IOException
@@ -25,9 +21,9 @@ import java.net.URL
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class SecondFragment : Fragment() {
+class ExpensesFragment : Fragment() {
 
-    private var _binding: FragmentSecondBinding? = null
+    private var _binding: FragmentExpensesBinding? = null
 
     private val binding get() = _binding!!
 
@@ -40,7 +36,7 @@ class SecondFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = FragmentExpensesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         getExpensesButton = binding.getExpensesButton
@@ -51,45 +47,41 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getExpensesButton.setOnClickListener {
-            Thread(Runnable {
+            Thread {
                 try {
                     val content =
                         getContent("http://92.53.124.44:8080/expenses")!!
                     activity?.runOnUiThread {
-                        doSmth(content)
+                        putRecordsInListView(content)
                     }
                 } catch (ex: IOException) {
                     println(ex.message)
                     Log.e("MayApp", "There was an IO error", ex)
                 }
-            }).start()
+            }.start()
         }
     }
 
-    fun doSmth(content: String) {
-        val arrayOfIds = arrayOf("1", "2")
-        val listOfPersons = mutableListOf<Map<String, String>>()
-
-        val person1 = parseJson(content)
-        //val person2 = parseJson1()
-
-        listOfPersons.add(0, person1)
-        //listOfPersons.add(1, person2)
-
+    private fun putRecordsInListView(content: String) {
+        val listOfExpenses = parseJson(content)
 
         val adapter = SimpleAdapter(
-            activity, listOfPersons, R.layout.listview_item, arrayOf("amount", "comment"),
+            activity, listOfExpenses, R.layout.listview_item, arrayOf("amount", "comment"),
             intArrayOf(R.id.textPerson, R.id.textAchievement)
         )
         listDB.adapter = adapter
     }
 
-    private fun parseJson(json: String): Map<String, String> {
+    private fun parseJson(json: String): List<Map<String, String>> {
         val jsonArray = JSONArray(json)
-        val map = mutableMapOf<String, String>()
-        map["amount"] = jsonArray.getJSONObject(0).getInt("amount").toString()
-        map["comment"] = jsonArray.getJSONObject(0).getString("comment")
-        return map
+        val mapList = mutableListOf<Map<String, String>>()
+        for (i in 0 until jsonArray.length()) {
+            val map = mutableMapOf<String, String>()
+            map["amount"] = jsonArray.getJSONObject(i).getDouble("amount").toString()
+            map["comment"] = jsonArray.getJSONObject(i).getString("comment")
+            mapList.add(map)
+        }
+        return mapList
     }
 
     @Throws(IOException::class)
@@ -100,10 +92,10 @@ class SecondFragment : Fragment() {
         return try {
             val url = URL(path)
             connection = url.openConnection() as HttpURLConnection
-            connection.setRequestMethod("GET")
-            connection.setReadTimeout(10000)
+            connection.requestMethod = "GET"
+            connection.readTimeout = 10000
             connection.connect()
-            stream = connection.getInputStream()
+            stream = connection.inputStream
             reader = BufferedReader(InputStreamReader(stream))
             val buf = StringBuilder()
             var line: String?

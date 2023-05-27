@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.financemanagerandroid.databinding.FragmentFirstBinding
+import com.example.financemanagerandroid.databinding.FragmentVersionBinding
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -20,7 +20,7 @@ import java.net.URL
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class VersionFragment : Fragment() {
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentVersionBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var helloText: TextView
@@ -32,7 +32,7 @@ class VersionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentVersionBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         helloText = binding.helloText
