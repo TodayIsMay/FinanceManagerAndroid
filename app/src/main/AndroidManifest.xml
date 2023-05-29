@@ -14,6 +14,11 @@
         android:theme="@style/Theme.FinanceManagerAndroid"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".MyDialogFragment"
+            android:exported="false"
+            android:label="@string/title_activity_expenses"
+            android:theme="@style/Theme.FinanceManagerAndroid" />
+        <activity
             android:name=".Expenses"
             android:exported="false"
             android:label="@string/title_activity_expenses"

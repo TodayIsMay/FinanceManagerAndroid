@@ -57,4 +57,9 @@
     </string>
     <string name="version">Version</string>
     <string name="get_expenses">Get Expenses</string>
+    <string name="insert_expense">Insert Expense</string>
+    <string name="insert">Insert</string>
+    <string name="comment">Comment</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
 </resources>

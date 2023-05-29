@@ -8,12 +8,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.financemanagerandroid.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
 
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -36,38 +30,5 @@ class MainActivity() : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
-
-    @Throws(IOException::class)
-    private fun getContent(path: String): String? {
-        var reader: BufferedReader? = null
-        var stream: InputStream? = null
-        var connection: HttpURLConnection? = null
-        return try {
-            val url = URL(path)
-            //connection = url.openConnection() as HttpsURLConnection
-            connection = url.openConnection() as HttpURLConnection
-            connection.setRequestMethod("GET")
-            connection.setReadTimeout(10000)
-            connection.connect()
-            stream = connection.getInputStream()
-            reader = BufferedReader(InputStreamReader(stream))
-            val buf = StringBuilder()
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                buf.append(line).append("\n")
-            }
-            return buf.toString()
-        } finally {
-            if (reader != null) {
-                reader.close()
-            }
-            if (stream != null) {
-                stream.close()
-            }
-            if (connection != null) {
-                connection.disconnect()
-            }
-        }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.financemanagerandroid
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +13,16 @@ import android.widget.SimpleAdapter
 import androidx.fragment.app.Fragment
 import com.example.financemanagerandroid.databinding.FragmentExpensesBinding
 import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.sql.Connection
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -28,7 +34,9 @@ class ExpensesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var getExpensesButton: Button
+    private lateinit var insertExpensesButton: Button
     private lateinit var listDB: ListView
+    private var test = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +48,7 @@ class ExpensesFragment : Fragment() {
         val root: View = binding.root
 
         getExpensesButton = binding.getExpensesButton
+        insertExpensesButton = binding.insertExpenseButton
         listDB = binding.listDB
 
         return root
@@ -59,6 +68,11 @@ class ExpensesFragment : Fragment() {
                     Log.e("MayApp", "There was an IO error", ex)
                 }
             }.start()
+        }
+
+        insertExpensesButton.setOnClickListener {
+            val intent = Intent(context, MyDialogFragment::class.java)
+            startActivity(intent)
         }
     }
 
