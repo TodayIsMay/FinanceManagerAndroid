@@ -55,11 +55,12 @@ class ExpensesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val act = activity as MainActivity
         getExpensesButton.setOnClickListener {
             Thread {
                 try {
                     val content =
-                        getContent("http://92.53.124.44:8080/expenses")!!
+                        getContent("http://92.53.124.44:8080/expenses/user/${act.stringLogin}")!!
                     activity?.runOnUiThread {
                         putRecordsInListView(content)
                     }

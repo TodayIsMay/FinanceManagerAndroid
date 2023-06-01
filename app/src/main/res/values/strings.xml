@@ -62,4 +62,8 @@
     <string name="comment">Comment</string>
     <string name="amount">Amount</string>
     <string name="category">Category</string>
+    <string name="log_in">Log in</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="log_out">Log out</string>
 </resources>

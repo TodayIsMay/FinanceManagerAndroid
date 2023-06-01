@@ -1,10 +1,13 @@
 package com.example.financemanagerandroid
 
-import android.content.Intent
+import android.R
+import android.R.attr.tag
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.example.financemanagerandroid.databinding.DialogFragmentBinding
 import java.io.BufferedOutputStream
 import java.net.HttpURLConnection
@@ -23,7 +26,7 @@ class MyDialogFragment : AppCompatActivity() {
 
         binding = DialogFragmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val login = getSharedPreferences("com.example.financemanagerandroid", Context.MODE_PRIVATE).getString("login", "")
         expenseNameText = binding.expenseNameText
         expenseAmount = binding.amountText
         expenseCategory = binding.categoryNumber
@@ -39,9 +42,9 @@ class MyDialogFragment : AppCompatActivity() {
                     "    \"comment\": \"${comment}\",\n" +
                     "    \"categoryId\": ${category}\n" +
                     "}"
-            sendJson("http://92.53.124.44:8080/insert", json)
-            val intent = Intent(binding.root.context, ExpensesFragment::class.java)
-            startActivity(intent)
+            sendJson("http://92.53.124.44:8080/insert/$login", json)
+
+            onBackPressed()
         }
     }
 
