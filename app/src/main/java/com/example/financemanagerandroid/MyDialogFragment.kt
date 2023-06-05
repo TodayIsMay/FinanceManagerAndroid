@@ -3,15 +3,18 @@ package com.example.financemanagerandroid
 import android.R
 import android.R.attr.tag
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.example.financemanagerandroid.databinding.DialogFragmentBinding
 import java.io.BufferedOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Base64
 
 
 class MyDialogFragment : AppCompatActivity() {
@@ -21,12 +24,14 @@ class MyDialogFragment : AppCompatActivity() {
     private lateinit var expenseAmount: TextView
     private lateinit var expenseCategory: TextView
     private lateinit var insertButton: Button
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DialogFragmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val login = getSharedPreferences("com.example.financemanagerandroid", Context.MODE_PRIVATE).getString("login", "")
+        val password = getSharedPreferences("com.example.financemanagerandroid", Context.MODE_PRIVATE).getString("password", "")
         expenseNameText = binding.expenseNameText
         expenseAmount = binding.amountText
         expenseCategory = binding.categoryNumber
@@ -42,13 +47,14 @@ class MyDialogFragment : AppCompatActivity() {
                     "    \"comment\": \"${comment}\",\n" +
                     "    \"categoryId\": ${category}\n" +
                     "}"
-            sendJson("http://92.53.124.44:8080/insert/$login", json)
+            sendJson("http://92.53.124.44:8080/insert/$login", json, login!!, password!!)
 
             onBackPressed()
         }
     }
 
-    private fun sendJson(path: String, message: String) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun sendJson(path: String, message: String, login: String, password: String) {
         Thread {
             var conn: HttpURLConnection? = null
             var os: BufferedOutputStream? = null
@@ -63,9 +69,12 @@ class MyDialogFragment : AppCompatActivity() {
                 conn.setDoOutput(true)
                 conn.setFixedLengthStreamingMode(message.toByteArray().size);
 
+                val valueToEncode = "$login:$password"
+                val encodedAuth = "Basic" + Base64.getEncoder().encodeToString(valueToEncode.toByteArray())
                 //make some HTTP header nicety
                 conn.setRequestProperty("Content-Type", "application/json;charset=utf-8")
                 conn.setRequestProperty("X-Requested-With", "XMLHttpRequest")
+                conn.setRequestProperty("Authorization", encodedAuth)
 
                 //open
                 conn.connect()

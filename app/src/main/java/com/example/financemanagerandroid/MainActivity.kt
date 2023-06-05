@@ -1,12 +1,15 @@
 package com.example.financemanagerandroid
 
+import android.R.attr.duration
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -27,11 +30,13 @@ class MainActivity() : AppCompatActivity() {
     private lateinit var textView: TextView
 
     var stringLogin: String = ""
+    var password: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = getSharedPreferences("com.example.financemanagerandroid", Context.MODE_PRIVATE)
         stringLogin = prefs.getString("login", "").toString()
+        password = prefs.getString("password", "").toString()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -63,10 +68,12 @@ class MainActivity() : AppCompatActivity() {
                 logIn()
                 true
             }
+
             R.id.logout_option -> {
                 logOut()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -94,26 +101,34 @@ class MainActivity() : AppCompatActivity() {
         password: String
     ) {//TODO: отправлять эту штуку в метод-распределитель на бэке
         val id = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+//        val message = "{\n" +
+//                "    \"login\": \"$login\",\n" +
+//                "    \"password\": \"$password\",\n" +
+//                "    \"deviceId\": \"$id\"\n" +
+//                "}"
         val message = "{\n" +
-                "    \"login\": \"$login\",\n" +
-                "    \"password\": \"$password\",\n" +
-                "    \"deviceId\": \"$id\"\n" +
+                "    \"username\": \"$login\",\n" +
+                "    \"password\": \"$password\"\n" +
                 "}"
-        sendUser("http://92.53.124.44:8080/users/insert", message)
+        sendUser("http://92.53.124.44:8080/registration", message, login, password)
         stringLogin = login
+        this.password = password
         prefs.edit().remove("login").commit()
         prefs.edit().putString("login", stringLogin).commit()
+        prefs.edit().remove("password").commit()
+        prefs.edit().putString("password", this.password).commit()
         textView.text = "You're logged in as $stringLogin"
     }
 
     override fun onStop() {
         val mEditor: SharedPreferences.Editor = prefs.edit()
         mEditor.putString("login", stringLogin).commit()
+        mEditor.putString("password", this.password).commit()
         super.onStop()
     }
 
     @Throws(IOException::class)
-    private fun sendUser(path: String, message: String) {
+    private fun sendUser(path: String, message: String, login: String, password: String) {
         Thread {
             var conn: HttpURLConnection? = null
             var os: BufferedOutputStream? = null
@@ -142,8 +157,9 @@ class MainActivity() : AppCompatActivity() {
                 os.flush()
 
                 //TODO: do somehting with response
-//        is = conn.getInputStream();
-//        String contentAsString = readIt(is,len);
+                val ins = conn.inputStream;
+                val inputAsString = ins.bufferedReader().use {it.readText() }
+                showToast(inputAsString)
             } finally {
                 //clean up
                 if (os != null) {
@@ -155,5 +171,13 @@ class MainActivity() : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    fun showToast(response: String) {
+        runOnUiThread {
+            val toast = Toast.makeText(applicationContext, response, Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.TOP, 0, 0)
+            toast.show()
+        }
     }
 }
