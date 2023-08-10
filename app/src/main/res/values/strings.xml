@@ -56,7 +56,7 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="version">Version</string>
-    <string name="get_expenses">Get Expenses</string>
+    <string name="get_transactions">Get Transactions</string>
     <string name="insert_expense">Insert Expense</string>
     <string name="insert">Insert</string>
     <string name="comment">Comment</string>
@@ -66,4 +66,7 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="log_out">Log out</string>
+    <string name="delete">Delete</string>
+    <string name="type">Type</string>
+    <string name="insert_transaction">insert transaction</string>
 </resources>

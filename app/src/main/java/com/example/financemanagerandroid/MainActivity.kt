@@ -101,11 +101,6 @@ class MainActivity() : AppCompatActivity() {
         password: String
     ) {//TODO: отправлять эту штуку в метод-распределитель на бэке
         val id = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-//        val message = "{\n" +
-//                "    \"login\": \"$login\",\n" +
-//                "    \"password\": \"$password\",\n" +
-//                "    \"deviceId\": \"$id\"\n" +
-//                "}"
         val message = "{\n" +
                 "    \"username\": \"$login\",\n" +
                 "    \"password\": \"$password\"\n" +
@@ -175,7 +170,10 @@ class MainActivity() : AppCompatActivity() {
 
     fun showToast(response: String) {
         runOnUiThread {
-            val toast = Toast.makeText(applicationContext, response, Toast.LENGTH_LONG)
+            val toast = Toast(applicationContext)
+            val toastView = layoutInflater.inflate(R.layout.login_toast_view, null)
+            toast.view = toastView
+            toast.duration = Toast.LENGTH_SHORT
             toast.setGravity(Gravity.TOP, 0, 0)
             toast.show()
         }

@@ -56,7 +56,7 @@ class Expenses : AppCompatActivity() {
 
         val adapter = SimpleAdapter(
             this, listOfPersons, R.layout.listview_item, arrayOf("amount", "comment"),
-            intArrayOf(R.id.textPerson, R.id.textAchievement)
+            intArrayOf(R.id.textAmount, R.id.textCategory)
         )
         listDB.adapter = adapter
 

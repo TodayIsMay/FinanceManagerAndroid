@@ -75,6 +75,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/category_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -90,13 +91,36 @@
             android:text="@string/category"
             android:textColor="@color/design_default_color_primary"/>
 
-        <EditText
-            android:id="@+id/category_number"
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/category_layout">
+
+        <TextView
+            android:id="@+id/transaction_type_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="40sp"
             android:layout_weight="1"
-            android:ems="10"
-            android:inputType="number" />
+            android:text="@string/type"
+            android:textColor="@color/design_default_color_primary"/>
+
+        <Spinner
+            android:id="@+id/transaction_type_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,10 +12,26 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/balance_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="start"
+            app:layout_constraintBottom_toTopOf="@id/listDB">
+
+            <TextView
+                android:layout_margin="10dp"
+                android:id="@+id/balance_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Balance = " />
+        </LinearLayout>
+
         <ListView
             android:id="@+id/listDB"
             android:layout_width="match_parent"
-            android:layout_height="630dp"
+            android:layout_height="610dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/buttons_layout"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:text="@string/insert_expense" />
+                android:text="@string/insert_transaction"/>
 
             <Button
                 android:id="@+id/get_expenses_button"
@@ -44,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:text="@string/get_expenses" />
+                android:text="@string/get_transactions" />
         </LinearLayout>
 
     </LinearLayout>
