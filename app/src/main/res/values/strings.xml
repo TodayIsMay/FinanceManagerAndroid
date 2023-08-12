@@ -69,4 +69,6 @@
     <string name="delete">Delete</string>
     <string name="type">Type</string>
     <string name="insert_transaction">insert transaction</string>
+    <string name="add_category">Add category</string>
+    <string name="name">Name</string>
 </resources>

@@ -2,30 +2,27 @@ package com.example.financemanagerandroid
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 
-class LoginDialog : DialogFragment() {
+class AddCategoryDialog: DialogFragment() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(activity)
-            // Get the layout inflater
             val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.popup_layout, null)
-            // Inflate and set the layout for the dialog
-            // Pass null as the parent view because its going in the dialog layout
+            val view = inflater.inflate(R.layout.add_category_layout, null)
             builder.setView(view)
-                // Add action buttons
                 .setPositiveButton(
                     "Ok"
                 ) { _, _ ->
-                    // sign in the user ...
                     val act = activity as MainActivity
-                    val loginTextView = view.findViewById<TextView>(R.id.loginText)
-                    val passwordTextView = view.findViewById<TextView>(R.id.passwordText)
-                    act.okClicked(loginTextView.text.toString(), passwordTextView.text.toString())
+                    val categoryNameTextView = view.findViewById<TextView>(R.id.category_name_text)
+                    act.saveCategoryClicked(categoryNameTextView.text.toString())
                 }
                 .setNegativeButton(
                     "Cancel"

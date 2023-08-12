@@ -51,6 +51,55 @@ class RequestsUtils {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun sendPostRequest(path: String, message: String, login: String, password: String) {
+        Thread {
+            var conn: HttpURLConnection? = null
+            var os: BufferedOutputStream? = null
+            try {
+                val url = URL(path)
+
+                conn = url.openConnection() as HttpURLConnection
+                conn.setReadTimeout(10000 /*milliseconds*/)
+                conn.setConnectTimeout(15000 /* milliseconds */)
+                conn.setRequestMethod("POST")
+                conn.setDoInput(true)
+                conn.setDoOutput(true)
+                conn.setFixedLengthStreamingMode(message.toByteArray().size);
+
+                val valueToEncode = "$login:$password"
+                val encodedAuth =
+                    "Basic" + Base64.getEncoder().encodeToString(valueToEncode.toByteArray())
+                //make some HTTP header nicety
+                conn.setRequestProperty("Content-Type", "application/json;charset=utf-8")
+                conn.setRequestProperty("X-Requested-With", "XMLHttpRequest")
+                conn.setRequestProperty("Authorization", encodedAuth)
+
+                //open
+                conn.connect()
+
+                //setup send
+                os = BufferedOutputStream(conn.getOutputStream())
+                os.write(message.toByteArray())
+                //clean up
+                os.flush()
+
+                //TODO: do somehting with response
+//        is = conn.getInputStream();
+//        String contentAsString = readIt(is,len);
+            } finally {
+                //clean up
+                if (os != null) {
+                    os.close()
+                };
+                //is.close();
+                if (conn != null) {
+                    conn.disconnect()
+                }
+            }
+        }.start()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun sendDeleteRequest(path: String, login: String, password: String) {
         var conn: HttpURLConnection? = null
         var os: BufferedOutputStream? = null

@@ -3,6 +3,7 @@ package com.example.financemanagerandroid
 import android.R.attr.duration
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
@@ -10,12 +11,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.financemanagerandroid.databinding.ActivityMainBinding
+import com.example.financemanagerandroid.utils.RequestsUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -23,7 +26,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class MainActivity() : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+    private val requestUtils = RequestsUtils()
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var prefs: SharedPreferences
@@ -74,6 +78,11 @@ class MainActivity() : AppCompatActivity() {
                 true
             }
 
+            R.id.add_category_option -> {
+                addCategory()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -84,23 +93,28 @@ class MainActivity() : AppCompatActivity() {
         return true
     }
 
-    fun logIn() {
+    private fun logIn() {
         val loginDialog = LoginDialog()
         val manager = supportFragmentManager
         loginDialog.show(manager, "myDialog")
     }
 
-    fun logOut() {
+    private fun logOut() {
         prefs.edit().remove("login").commit()
         stringLogin = prefs.getString("login", "").toString()
         textView.text = "You're not logged in"
     }
 
+    private fun addCategory() {
+        val addCategoryDialog = AddCategoryDialog()
+        val manager = supportFragmentManager
+        addCategoryDialog.show(manager, "addCategoryDialog")
+    }
+
     fun okClicked(
         login: String,
         password: String
-    ) {//TODO: отправлять эту штуку в метод-распределитель на бэке
-        val id = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+    ) {
         val message = "{\n" +
                 "    \"username\": \"$login\",\n" +
                 "    \"password\": \"$password\"\n" +
@@ -113,6 +127,15 @@ class MainActivity() : AppCompatActivity() {
         prefs.edit().remove("password").commit()
         prefs.edit().putString("password", this.password).commit()
         textView.text = "You're logged in as $stringLogin"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun saveCategoryClicked(name: String) {
+        val message = "{\n" +
+                "    \"name\": \"$name\"\n" +
+                "}"
+        requestUtils.sendPostRequest("http://92.53.124.44:8080/categories/insert", message,
+            stringLogin, password)
     }
 
     override fun onStop() {
@@ -153,7 +176,7 @@ class MainActivity() : AppCompatActivity() {
 
                 //TODO: do somehting with response
                 val ins = conn.inputStream;
-                val inputAsString = ins.bufferedReader().use {it.readText() }
+                val inputAsString = ins.bufferedReader().use { it.readText() }
                 showToast(inputAsString)
             } finally {
                 //clean up

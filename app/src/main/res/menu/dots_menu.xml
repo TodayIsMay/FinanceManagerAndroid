@@ -7,5 +7,8 @@
     <item
         android:id="@+id/logout_option"
         android:title="@string/log_out" />
+    <item
+        android:id="@+id/add_category_option"
+        android:title="@string/add_category"/>
 
 </menu>

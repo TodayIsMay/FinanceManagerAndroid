@@ -61,12 +61,8 @@ class ExpensesFragment : Fragment() {
         listDB = binding.listDB
         balanceTextView = binding.balanceText
         this.registerForContextMenu(listDB)
+        fillListDB(activity as MainActivity)
 
-        val act = activity as MainActivity
-        Thread {
-            val availableFunds = getAvailableFunds(act)
-            balanceTextView.text = availableFunds
-        }.start()
         return root
     }
 
@@ -93,6 +89,12 @@ class ExpensesFragment : Fragment() {
             val intent = Intent(context, MyDialogFragment::class.java)
             startActivity(intent)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        fillListDB(activity as MainActivity)
     }
 
     override fun onCreateContextMenu(
@@ -146,6 +148,7 @@ class ExpensesFragment : Fragment() {
                 activity?.runOnUiThread {
                     putRecordsInListView(content)
                 }
+                updateAvailableFundsView(act)
             } catch (ex: IOException) {
                 println(ex.message)
                 Log.e("MayApp", "There was an IO error", ex)
@@ -153,6 +156,7 @@ class ExpensesFragment : Fragment() {
         }.start()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun putRecordsInListView(content: String) {
         val listOfExpenses = parseJson(content)
 
@@ -165,10 +169,16 @@ class ExpensesFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAvailableFunds(act: MainActivity): String {
-        val json = getContent("http://92.53.124.44:8080/users/${act.stringLogin}", act.stringLogin, act.password)
+    private fun updateAvailableFundsView(act: MainActivity) {
+        val json = getContent(
+            "http://92.53.124.44:8080/users/${act.stringLogin}",
+            act.stringLogin,
+            act.password
+        )
         val jsonObject = JSONObject(json)
-        return jsonObject.getDouble("availableFunds").toString();
+        activity?.runOnUiThread {
+            balanceTextView.text = jsonObject.getDouble("availableFunds").toString();
+        }
     }
 
     private fun parseJson(json: String): List<Map<String, String>> {
